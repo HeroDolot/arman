@@ -7,15 +7,11 @@ if (isset($_POST['uname']) && isset($_POST['pword'])) {
   $username = mysqli_real_escape_string($conn, $_POST['uname']);
   $password = mysqli_real_escape_string($conn, $_POST['pword']);
 
-  $result = $conn->query("SELECT * FROM user WHERE uname='$username'");
-
-  if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-      if (password_verify($password, $row['pword'])) {
-        $_SESSION["user_id"] = $row["id"];
-        header('location:./logged-in.php');
-      }
-    }
+  if ($conn->query("SELECT * FROM user WHERE uname='$username' AND pword='$password'")->num_rows == 1){
+    $_SESSION["userid"] = $conn->query("SELECT * FROM user WHERE uname='$username' AND pword='$password'")->fetch_assoc()["id"];
+    header("location:./logged-in.php");
+  } else {
+    header("location:./?status=Incorrect User/Pass");
   }
 }
 ?>

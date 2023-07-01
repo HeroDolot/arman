@@ -21,4 +21,3 @@
   } else {
     echo "Username Already Exists";
   }
-?>

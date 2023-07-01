@@ -1,20 +1,24 @@
 <?php
     include '../connection.php';
 
-   $uname = $_POST['uname'];
-   $pword = $_POST['pword'];
+   $uname = $_GET['uname'];
+   $pword = password_hash($_GET['pword'], PASSWORD_DEFAULT);
 
-//    var_dump($_POST);
-
-   $sql = "INSERT INTO user (uname,pword) VALUES ($uname,$pword)";
-
-   if ($conn->query($sql) === TRUE) {
-    echo "New record created successfully";
-    // header('location:../index.php');
+  $sql = "SELECT * FROM user WHERE uname = '$uname'";
+  $result = $conn->query($sql);
+  
+  if ($result->num_rows == 0) {
+    // output data of each row
+    $sql = "INSERT INTO user (uname, pword)
+    VALUES ('$uname','$pword')";
+    
+    if (mysqli_query($conn, $sql)) {
+      echo "New record created successfully";
+          header("location: ../index.php");
+    } else {
+      echo "Error: " . $sql . "<br>" . mysqli_error($conn);
+    }
   } else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
+    echo "Username Already Exists";
   }
-
-$conn->close();
 ?>
-

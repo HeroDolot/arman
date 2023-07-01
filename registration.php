@@ -20,7 +20,7 @@ include './connection.php';
                 <div class="card">
                     <div class="card-header fw-bolder fs-4 text-center p-4">Registration</div>
                     <div class="card-body">
-                        <form action="./forms/registration-con.php" method="post">
+                        <form action="./forms/registration-con.php" method="GET">
                             <input type="text" name="uname" id="uname" placeholder="Enter Username" class="form-control mb-3">
                             <input type="password" name="pword" id="pword" placeholder="Enter Password" class="form-control mb-3">
                                 <div class="col-md-6">

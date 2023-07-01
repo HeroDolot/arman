@@ -3,16 +3,21 @@ include './connection.php';
 
 session_start();
 
-if (isset($_POST['uname']) && isset($_POST['pword'])) {
-  $username = mysqli_real_escape_string($conn, $_POST['uname']);
-  $password = mysqli_real_escape_string($conn, $_POST['pword']);
-
-  if ($conn->query("SELECT * FROM user WHERE uname='$username' AND pword='$password'")->num_rows == 1){
-    $_SESSION["userid"] = $conn->query("SELECT * FROM user WHERE uname='$username' AND pword='$password'")->fetch_assoc()["id"];
-    header("location:./logged-in.php");
-  } else {
-    header("location:./?status=Incorrect User/Pass");
-  }
+if (isset($_POST['submitLogin'])) {
+    $username = mysqli_real_escape_string($conn, $_POST['uname']);
+    $password = mysqli_real_escape_string($conn, $_POST['pword']);
+    $result = $conn->query("SELECT * FROM user WHERE uname='$username'");
+    if ($result->num_rows == 1) {
+        $result = $result->fetch_assoc();
+        if (password_verify($password, $result["pword"])){
+            $_SESSION["userid"] = $result["id"];
+            header("location:./logged-in.php"); 
+        } else {
+            header("location:./?status=Incorrect User/pass");
+        }
+    } else {
+        header("location:./?status=Username Not Exists");
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -32,12 +37,12 @@ if (isset($_POST['uname']) && isset($_POST['pword'])) {
                 <div class="card">
                     <div class="card-header fw-bolder fs-4 text-center p-4">Simple Registration and Login Form</div>
                     <div class="card-body">
-                        <form action="" method="post">
+                        <form action="" method="POST">
                             <input type="text" name="uname" id="uname" placeholder="Enter Username" class="form-control mb-3">
                             <input type="password" name="pword" id="pword" placeholder="Enter Password" class="form-control mb-3">
                             <div class="row">
                                 <div class="col-md-6">
-                                    <button type="submit" class="btn btn-primary">Login</button>
+                                    <button type="submit" name="submitLogin" class="btn btn-primary">Login</button>
                                 </div>
                                 <div class="col-md-6 mt-1">
                                     <a href="./registration.php">Don't have an Account?</a>
@@ -49,4 +54,5 @@ if (isset($_POST['uname']) && isset($_POST['pword'])) {
             </div>
     </section>
 </body>
+
 </html>
